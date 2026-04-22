@@ -11,10 +11,7 @@ export function Navbar() {
   const location = useLocation()
 
   return (
-    <header
-      className="sticky top-0 z-50 h-[68px] flex items-center border-b border-[#E2E8F0]"
-      style={{ background: 'rgba(255,255,255,0.97)', backdropFilter: 'blur(8px)' }}
-    >
+    <header className="navbar-glass sticky top-0 z-50 h-[68px] flex items-center border-b border-[#E2E8F0]">
       <div className="w-full max-w-[1200px] mx-auto px-8 flex items-center justify-between">
         {/* Logo */}
         <Link to="/" className="flex items-center gap-2.5 no-underline">
@@ -55,6 +52,7 @@ export function Navbar() {
             {(['fr', 'ar'] as const).map((l) => (
               <button
                 key={l}
+                type="button"
                 onClick={() => dispatch(setLang(l))}
                 className={cn(
                   'px-3 py-1.5 transition-colors duration-150 cursor-pointer uppercase',
@@ -69,7 +67,7 @@ export function Navbar() {
           {/* CTA */}
           <Link
             to="/auth"
-            className="inline-flex items-center gap-1.5 text-sm font-semibold text-white bg-primary rounded-full px-4 py-2 shadow-[0_4px_14px_0_rgba(11,110,254,0.25)] hover:bg-primary-dark hover:-translate-y-px transition-all duration-200 no-underline"
+            className="inline-flex items-center gap-1.5 text-sm font-semibold text-white bg-primary rounded-full px-4 py-2 shadow-[0_4px_14px_0_rgba(9,20,183,0.25)] hover:bg-primary-dark hover:-translate-y-px transition-all duration-200 no-underline"
           >
             {t.cta}
           </Link>
