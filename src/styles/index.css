@@ -1,15 +1,21 @@
 @import "tailwindcss";
 
+/* @theme is a TailwindCSS v4 directive — processed at build time, not a browser rule */
 @theme {
-  --color-primary: #0B6EFE;
-  --color-primary-dark: #0958D9;
-  --color-primary-light: #3B8FFF;
-  --color-primary-subtle: #EAF3FF;
-  --color-accent: #1E2A38;
+  /* Official Codeva Clinic palette */
+  --color-primary: #0914B7;
+  --color-primary-dark: #070FA3;
+  --color-primary-subtle: #F7FAFB;
+  --color-accent: #1E2A39;
+  --color-dark: #202C3E;
+  --color-mid: #273341;
+
+  /* Semantic / status colors */
   --color-success: #10B981;
   --color-warning: #F59E0B;
   --color-error: #EF4444;
   --color-info: #06B6D4;
+
   --font-sans: 'Inter', ui-sans-serif, system-ui, sans-serif;
   --font-arabic: 'Tajawal', ui-sans-serif, system-ui, sans-serif;
 }
@@ -28,4 +34,15 @@ body {
   font-family: 'Inter', ui-sans-serif, system-ui, sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+}
+
+/* Layout component styles — replaces inline style props */
+.navbar-glass {
+  background: rgba(255, 255, 255, 0.97);
+  -webkit-backdrop-filter: blur(8px);
+  backdrop-filter: blur(8px);
+}
+
+.footer-dark {
+  background: #1E2A39;
 }
