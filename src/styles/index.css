@@ -16,14 +16,8 @@
   --color-error: #EF4444;
   --color-info: #06B6D4;
 
-  --font-sans: 'Inter', ui-sans-serif, system-ui, sans-serif;
-  --font-arabic: 'Tajawal', ui-sans-serif, system-ui, sans-serif;
-}
-
-[dir="rtl"] {
-  font-family: 'Tajawal', ui-sans-serif, system-ui, sans-serif;
-  letter-spacing: 0;
-  line-height: 1.7;
+  --font-sans: 'Tajawal', ui-sans-serif, system-ui, sans-serif;
+  --font-latin: 'Inter', ui-sans-serif, system-ui, sans-serif;
 }
 
 * {
@@ -31,9 +25,17 @@
 }
 
 body {
-  font-family: 'Inter', ui-sans-serif, system-ui, sans-serif;
+  font-family: 'Tajawal', ui-sans-serif, system-ui, sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  letter-spacing: 0;
+  line-height: 1.7;
+}
+
+[dir="ltr"] body {
+  font-family: 'Inter', ui-sans-serif, system-ui, sans-serif;
+  letter-spacing: normal;
+  line-height: 1.5;
 }
 
 /* Layout component styles — replaces inline style props */
