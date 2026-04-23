@@ -46,3 +46,13 @@ body {
 .footer-dark {
   background: #1E2A39;
 }
+
+/* Hero section */
+.hero-bg {
+  background: linear-gradient(135deg, #091929, #0B3472 55%, #0914B7);
+}
+
+.hero-dots {
+  background-image: radial-gradient(circle, rgba(255, 255, 255, 0.5) 1px, transparent 1px);
+  background-size: 28px 28px;
+}
