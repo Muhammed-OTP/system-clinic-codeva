@@ -1,6 +1,7 @@
 import { Link } from 'react-router-dom'
 import { Activity, Phone, Mail, MapPin } from 'lucide-react'
 import { useT } from '@/hooks/useT'
+import { specialities } from '@/constants/data'
 
 function FacebookIcon({ size = 14 }: { size?: number }) {
   return (
@@ -11,10 +12,9 @@ function FacebookIcon({ size = 14 }: { size?: number }) {
 }
 
 export function Footer() {
-  const { t } = useT()
+  const { t, lang } = useT()
 
   const quickLinks = t.nav.map((label, i) => ({ label, path: t.navPaths[i] }))
-  const footerSpecialities = ['Cardiologie', 'Pédiatrie', 'Dermatologie', 'Neurologie', 'Orthopédie', 'Urgences']
 
   return (
     <footer className="footer-dark text-white pt-14 pb-8">
@@ -47,14 +47,14 @@ export function Footer() {
             </ul>
           </div>
 
-          {/* Specialities */}
+          {/* Specialities — pulled from data, translated */}
           <div>
             <h4 className="text-sm font-semibold mb-4">{t.footerSpecialities}</h4>
             <ul className="space-y-2.5">
-              {footerSpecialities.map((s) => (
-                <li key={s}>
+              {specialities.slice(0, 6).map((s) => (
+                <li key={s.fr}>
                   <Link to="/specialities" className="text-sm no-underline text-white/65 transition-colors duration-150 hover:text-white">
-                    {s}
+                    {s[lang]}
                   </Link>
                 </li>
               ))}
@@ -67,15 +67,15 @@ export function Footer() {
             <ul className="space-y-3">
               <li className="flex items-center gap-2 text-sm text-white/65">
                 <Phone size={14} className="flex-shrink-0" />
-                +213 XX XX XX XX
+                {t.infoPhone}
               </li>
               <li className="flex items-center gap-2 text-sm text-white/65">
                 <Mail size={14} className="flex-shrink-0" />
-                contact@codeva-clinic.dz
+                {t.infoEmailVal}
               </li>
               <li className="flex items-center gap-2 text-sm text-white/65">
                 <MapPin size={14} className="flex-shrink-0" />
-                123 Rue de la Santé, Alger
+                {t.infoAddressVal}
               </li>
             </ul>
           </div>
@@ -87,6 +87,7 @@ export function Footer() {
           <a
             href="#"
             aria-label="Facebook"
+            onClick={(e) => e.preventDefault()}
             className="w-8 h-8 flex items-center justify-center rounded-lg border border-white/10 text-white/65 transition-colors duration-150 hover:bg-[#1877F2] hover:border-[#1877F2] hover:text-white"
           >
             <FacebookIcon size={14} />
