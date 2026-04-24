@@ -3,33 +3,52 @@ import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { z } from 'zod'
 import { Link } from 'react-router-dom'
-import { Stethoscope } from 'lucide-react'
+import { Stethoscope, ArrowRight, ArrowLeft } from 'lucide-react'
 import { Button } from '@/components/ui/Button'
 import { Input } from '@/components/ui/Input'
 import { useT } from '@/hooks/useT'
 import { useTitle } from '@/hooks/useTitle'
 
-const loginSchema = z.object({
-  email: z.string().email(),
-  password: z.string().min(8),
-})
+function makeLoginSchema(lang: string) {
+  const isAr = lang === 'ar'
+  return z.object({
+    email: z
+      .string()
+      .min(1, isAr ? 'أدخل بريدك الإلكتروني' : 'Veuillez saisir votre email')
+      .email(isAr ? 'البريد الإلكتروني غير صالح' : 'Adresse e-mail invalide'),
+    password: z
+      .string()
+      .min(8, isAr ? 'كلمة المرور يجب أن تكون 8 أحرف على الأقل' : 'Minimum 8 caractères'),
+  })
+}
 
-const registerSchema = z.object({
-  firstName: z.string().min(1),
-  lastName: z.string().min(1),
-  phone: z.string().min(8),
-  email: z.string().email(),
-  password: z.string().min(8),
-})
+function makeRegisterSchema(lang: string) {
+  const isAr = lang === 'ar'
+  const required = isAr ? 'هذا الحقل مطلوب' : 'Ce champ est obligatoire'
+  return z.object({
+    firstName: z.string().min(1, required),
+    lastName: z.string().min(1, required),
+    phone: z
+      .string()
+      .min(8, isAr ? 'أدخل رقم هاتف صحيح' : 'Numéro de téléphone invalide'),
+    email: z
+      .string()
+      .min(1, isAr ? 'أدخل بريدك الإلكتروني' : 'Veuillez saisir votre email')
+      .email(isAr ? 'البريد الإلكتروني غير صالح' : 'Adresse e-mail invalide'),
+    password: z
+      .string()
+      .min(8, isAr ? 'كلمة المرور يجب أن تكون 8 أحرف على الأقل' : 'Minimum 8 caractères'),
+  })
+}
 
-type LoginForm = z.infer<typeof loginSchema>
-type RegisterForm = z.infer<typeof registerSchema>
-
+type LoginForm = z.infer<ReturnType<typeof makeLoginSchema>>
+type RegisterForm = z.infer<ReturnType<typeof makeRegisterSchema>>
 type Tab = 'login' | 'register'
 
-function LoginForm({ t }: { t: ReturnType<typeof useT>['t'] }) {
+function LoginFormBody({ t, lang }: { t: ReturnType<typeof useT>['t']; lang: string }) {
+  const schema = makeLoginSchema(lang)
   const { register, handleSubmit, formState: { errors, isSubmitting } } = useForm<LoginForm>({
-    resolver: zodResolver(loginSchema),
+    resolver: zodResolver(schema),
   })
 
   function onSubmit(_data: LoginForm) {
@@ -68,9 +87,10 @@ function LoginForm({ t }: { t: ReturnType<typeof useT>['t'] }) {
   )
 }
 
-function RegisterForm({ t }: { t: ReturnType<typeof useT>['t'] }) {
+function RegisterFormBody({ t, lang }: { t: ReturnType<typeof useT>['t']; lang: string }) {
+  const schema = makeRegisterSchema(lang)
   const { register, handleSubmit, formState: { errors, isSubmitting } } = useForm<RegisterForm>({
-    resolver: zodResolver(registerSchema),
+    resolver: zodResolver(schema),
   })
 
   function onSubmit(_data: RegisterForm) {
@@ -130,23 +150,25 @@ function RegisterForm({ t }: { t: ReturnType<typeof useT>['t'] }) {
 }
 
 export default function AuthPage() {
-  const { t } = useT()
+  const { t, lang, isRTL } = useT()
   const [tab, setTab] = useState<Tab>('login')
   useTitle(tab === 'login' ? t.authLoginTitle : t.authRegisterTitle)
 
+  const BackArrow = isRTL ? ArrowLeft : ArrowRight
+
   return (
-    <div className="min-h-screen hero-bg flex items-center justify-center px-4 py-12 relative">
+    <div className="min-h-screen hero-bg flex flex-col items-center justify-center px-4 py-12 relative">
       <div className="hero-dots absolute inset-0 opacity-10" />
 
       <div className="relative z-10 w-full max-w-md">
         {/* Brand */}
         <div className="text-center mb-8">
-          <Link to="/" className="inline-flex items-center gap-2 text-white">
+          <div className="inline-flex items-center gap-2 text-white">
             <div className="w-10 h-10 rounded-xl bg-white/20 flex items-center justify-center">
               <Stethoscope size={20} className="text-white" />
             </div>
             <span className="text-xl font-extrabold">{t.appBrand}</span>
-          </Link>
+          </div>
         </div>
 
         {/* Card */}
@@ -156,10 +178,11 @@ export default function AuthPage() {
             {(['login', 'register'] as Tab[]).map((tabId) => (
               <button
                 key={tabId}
+                type="button"
                 onClick={() => setTab(tabId)}
                 className={`py-4 text-sm font-semibold transition-colors ${
                   tab === tabId
-                    ? 'text-primary border-b-2 border-primary'
+                    ? 'text-primary border-b-2 border-primary bg-primary-subtle/50'
                     : 'text-slate-400 hover:text-slate-600'
                 }`}
               >
@@ -179,14 +202,19 @@ export default function AuthPage() {
               </p>
             </div>
 
-            {tab === 'login' ? <LoginForm t={t} /> : <RegisterForm t={t} />}
+            {/* key={lang} forces remount when language changes → schema and messages stay in sync */}
+            {tab === 'login'
+              ? <LoginFormBody key={`login-${lang}`} t={t} lang={lang} />
+              : <RegisterFormBody key={`register-${lang}`} t={t} lang={lang} />
+            }
 
-            {/* Switch tab link */}
+            {/* Switch tab */}
             <p className="text-center text-sm text-slate-500 mt-6">
               {tab === 'login' ? (
                 <>
                   {t.noAccount}{' '}
                   <button
+                    type="button"
                     onClick={() => setTab('register')}
                     className="text-primary font-semibold hover:underline"
                   >
@@ -197,6 +225,7 @@ export default function AuthPage() {
                 <>
                   {t.hasAccount}{' '}
                   <button
+                    type="button"
                     onClick={() => setTab('login')}
                     className="text-primary font-semibold hover:underline"
                   >
@@ -208,12 +237,20 @@ export default function AuthPage() {
           </div>
         </div>
 
-        {/* Back to site */}
-        <p className="text-center mt-6">
-          <Link to="/" className="text-white/60 text-sm hover:text-white transition-colors">
-            ← {t.nav[0]}
+        {/* Back to home — prominent, clear for all users */}
+        <div className="mt-6">
+          <Link to="/">
+            <Button
+              type="button"
+              variant="ghost"
+              size="md"
+              className="w-full text-white/70 hover:text-white hover:bg-white/10 border border-white/20 hover:border-white/40 gap-2"
+            >
+              <BackArrow size={16} />
+              {t.nav[0]}
+            </Button>
           </Link>
-        </p>
+        </div>
       </div>
     </div>
   )
