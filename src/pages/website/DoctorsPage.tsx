@@ -1,0 +1,194 @@
+import { useState } from 'react'
+import { X, Award, GraduationCap, Briefcase, Building2, Stethoscope } from 'lucide-react'
+import { Button } from '@/components/ui/Button'
+import { doctors, type Doctor } from '@/constants/data'
+import { useT } from '@/hooks/useT'
+import { useTitle } from '@/hooks/useTitle'
+import { Link } from 'react-router-dom'
+
+function DoctorModal({ doctor, onClose }: { doctor: Doctor; onClose: () => void }) {
+  const { t, lang } = useT()
+
+  return (
+    <div
+      className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm"
+      onClick={(e) => { if (e.target === e.currentTarget) onClose() }}
+    >
+      <div className="bg-white rounded-2xl shadow-2xl w-full max-w-xl max-h-[90vh] overflow-y-auto">
+        {/* Header */}
+        <div className="hero-bg rounded-t-2xl p-6 relative">
+          <button
+            onClick={onClose}
+            className="absolute top-4 end-4 w-8 h-8 rounded-full bg-white/20 hover:bg-white/30 flex items-center justify-center text-white transition-colors"
+            aria-label={t.dmClose}
+          >
+            <X size={16} />
+          </button>
+          <div className="flex items-center gap-4">
+            <div className="w-16 h-16 rounded-2xl bg-white/20 flex items-center justify-center flex-shrink-0">
+              <Stethoscope size={28} className="text-white" />
+            </div>
+            <div>
+              <h2 className="text-xl font-extrabold text-white">{doctor.name}</h2>
+              <p className="text-white/80 text-sm mt-0.5">
+                {lang === 'ar' ? doctor.specialtyAr : doctor.specialtyFr}
+              </p>
+            </div>
+          </div>
+          <span className="inline-flex items-center gap-1.5 mt-4 bg-white/15 border border-white/25 text-white text-xs font-semibold px-3 py-1 rounded-full">
+            <Award size={12} />
+            {t.dmCertified}
+          </span>
+        </div>
+
+        {/* Body */}
+        <div className="p-6 space-y-6">
+          {/* Education */}
+          <div>
+            <div className="flex items-center gap-2 mb-3">
+              <div className="w-7 h-7 rounded-lg bg-primary-subtle flex items-center justify-center">
+                <GraduationCap size={14} className="text-primary" />
+              </div>
+              <h3 className="font-bold text-accent text-sm ltr:tracking-wide ltr:uppercase">
+                {t.dmEducation}
+              </h3>
+            </div>
+            <ul className="space-y-1.5">
+              <li className="text-sm text-slate-600 flex items-start gap-2">
+                <span className="w-1.5 h-1.5 rounded-full bg-primary/40 mt-2 flex-shrink-0" />
+                {doctor.degree}
+              </li>
+              <li className="text-sm text-slate-600 flex items-start gap-2">
+                <span className="w-1.5 h-1.5 rounded-full bg-primary/40 mt-2 flex-shrink-0" />
+                {doctor.specialization}
+              </li>
+            </ul>
+          </div>
+
+          {/* Experience */}
+          <div>
+            <div className="flex items-center gap-2 mb-3">
+              <div className="w-7 h-7 rounded-lg bg-primary-subtle flex items-center justify-center">
+                <Briefcase size={14} className="text-primary" />
+              </div>
+              <h3 className="font-bold text-accent text-sm ltr:tracking-wide ltr:uppercase">
+                {t.dmExperience}
+              </h3>
+            </div>
+            <p className="text-2xl font-extrabold text-primary mb-2">
+              {doctor.yearsExp}{' '}
+              <span className="text-base font-medium text-slate-500">{t.dmYearsExp}</span>
+            </p>
+            <p className="text-sm text-slate-600 leading-relaxed">
+              {lang === 'ar' ? doctor.domainsAr : doctor.domainsFr}
+            </p>
+          </div>
+
+          {/* Workplaces */}
+          <div>
+            <div className="flex items-center gap-2 mb-3">
+              <div className="w-7 h-7 rounded-lg bg-primary-subtle flex items-center justify-center">
+                <Building2 size={14} className="text-primary" />
+              </div>
+              <h3 className="font-bold text-accent text-sm ltr:tracking-wide ltr:uppercase">
+                {t.dmWorkplaces}
+              </h3>
+            </div>
+            <ul className="space-y-2">
+              {doctor.workplaces.map((wp, i) => (
+                <li key={i} className="flex items-center gap-2">
+                  <span
+                    className={`text-xs font-semibold px-2 py-0.5 rounded-full ${
+                      wp.type === 'gov'
+                        ? 'bg-blue-50 text-blue-600 border border-blue-100'
+                        : 'bg-emerald-50 text-emerald-600 border border-emerald-100'
+                    }`}
+                  >
+                    {wp.type === 'gov' ? '🏛' : '🏥'}
+                  </span>
+                  <span className="text-sm text-slate-700">{wp.name}</span>
+                </li>
+              ))}
+            </ul>
+          </div>
+        </div>
+
+        {/* Footer */}
+        <div className="px-6 pb-6 flex gap-3 justify-end border-t border-[#E2E8F0] pt-4">
+          <Button variant="outline" size="md" onClick={onClose}>{t.dmClose}</Button>
+          <Link to="/contact">
+            <Button variant="primary" size="md">{t.dmBook}</Button>
+          </Link>
+        </div>
+      </div>
+    </div>
+  )
+}
+
+export default function DoctorsPage() {
+  const { t, lang } = useT()
+  useTitle(t.nav[3])
+
+  const [selected, setSelected] = useState<Doctor | null>(null)
+
+  return (
+    <main>
+      {/* ── Banner ── */}
+      <section className="hero-bg py-24 relative overflow-hidden">
+        <div className="hero-dots absolute inset-0 opacity-10" />
+        <div className="relative z-10 max-w-[1200px] mx-auto px-8 text-center text-white">
+          <span className="text-xs font-bold ltr:tracking-widest ltr:uppercase text-white/60">
+            {t.doctorsLabel}
+          </span>
+          <h1 className="text-4xl lg:text-5xl font-extrabold mt-2">{t.doctorsTitle}</h1>
+          <p className="mt-4 text-white/70 max-w-xl mx-auto text-lg">{t.doctorsSub}</p>
+        </div>
+      </section>
+
+      {/* ── Doctor Cards ── */}
+      <section className="py-20 bg-primary-subtle">
+        <div className="max-w-[1200px] mx-auto px-8">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+            {doctors.map((doc) => (
+              <div
+                key={doc.id}
+                className="bg-white border border-[#E2E8F0] rounded-xl overflow-hidden transition-all duration-300 hover:-translate-y-[3px] hover:shadow-xl flex flex-col"
+              >
+                {/* Card avatar */}
+                <div className="h-32 hero-bg flex items-center justify-center">
+                  <div className="w-16 h-16 rounded-2xl bg-white/20 flex items-center justify-center">
+                    <Stethoscope size={28} className="text-white" />
+                  </div>
+                </div>
+                <div className="p-5 flex flex-col flex-1">
+                  <h3 className="font-bold text-accent text-base">{doc.name}</h3>
+                  <p className="text-primary text-sm font-medium mt-0.5">
+                    {lang === 'ar' ? doc.specialtyAr : doc.specialtyFr}
+                  </p>
+                  <p className="text-slate-500 text-xs leading-relaxed mt-2 flex-1">
+                    {lang === 'ar' ? doc.bioAr : doc.bioFr}
+                  </p>
+                  <div className="flex gap-2 mt-4">
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      className="flex-1"
+                      onClick={() => setSelected(doc)}
+                    >
+                      {t.viewProfile}
+                    </Button>
+                    <Link to="/contact" className="flex-1">
+                      <Button variant="primary" size="sm" className="w-full">{t.book}</Button>
+                    </Link>
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {selected && <DoctorModal doctor={selected} onClose={() => setSelected(null)} />}
+    </main>
+  )
+}
