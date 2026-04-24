@@ -3,15 +3,17 @@ import type { InputHTMLAttributes, TextareaHTMLAttributes } from 'react'
 
 interface InputProps extends InputHTMLAttributes<HTMLInputElement> {
   label?: string
+  error?: string
   className?: string
 }
 
 interface TextareaProps extends TextareaHTMLAttributes<HTMLTextAreaElement> {
   label?: string
+  error?: string
   className?: string
 }
 
-export function Input({ label, className, id, ...props }: InputProps) {
+export function Input({ label, error, className, id, ...props }: InputProps) {
   return (
     <div className="flex flex-col gap-1.5">
       {label && (
@@ -25,15 +27,17 @@ export function Input({ label, className, id, ...props }: InputProps) {
           'w-full px-3.5 py-2.5 text-sm text-accent bg-white border border-[#E2E8F0] rounded-lg',
           'placeholder:text-[#94A3B8] outline-none transition-colors duration-150',
           'focus:border-primary focus:ring-2 focus:ring-primary/10',
+          error && 'border-error focus:border-error focus:ring-error/10',
           className
         )}
         {...props}
       />
+      {error && <p className="text-xs text-error">{error}</p>}
     </div>
   )
 }
 
-export function Textarea({ label, className, id, ...props }: TextareaProps) {
+export function Textarea({ label, error, className, id, ...props }: TextareaProps) {
   return (
     <div className="flex flex-col gap-1.5">
       {label && (
@@ -47,10 +51,12 @@ export function Textarea({ label, className, id, ...props }: TextareaProps) {
           'w-full px-3.5 py-2.5 text-sm text-accent bg-white border border-[#E2E8F0] rounded-lg',
           'placeholder:text-[#94A3B8] outline-none transition-colors duration-150 resize-none',
           'focus:border-primary focus:ring-2 focus:ring-primary/10',
+          error && 'border-error focus:border-error focus:ring-error/10',
           className
         )}
         {...props}
       />
+      {error && <p className="text-xs text-error">{error}</p>}
     </div>
   )
 }

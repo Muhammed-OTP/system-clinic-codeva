@@ -2,9 +2,11 @@ import heroImg from '@/assets/hero.png'
 import { Button } from '@/components/ui/Button'
 import { benefits, services } from '@/constants/data'
 import { useT } from '@/hooks/useT'
+import { useTitle } from '@/hooks/useTitle'
 
 export default function HomePage() {
   const { t, lang } = useT()
+  useTitle(t.nav[0])
 
   const stats = [
     { num: t.stat1Num, label: t.stat1Label },
@@ -20,11 +22,11 @@ export default function HomePage() {
         <div className="hero-dots absolute inset-0 opacity-10" />
         <div className="absolute end-0 top-1/2 -translate-y-1/2 w-[600px] h-[600px] rounded-full opacity-20 blur-3xl bg-primary pointer-events-none" />
 
-        <div className="relative z-10 max-w-7xl mx-auto px-6 lg:px-12 py-20 w-full flex flex-col lg:flex-row rtl:lg:flex-row-reverse items-center gap-12">
+        <div className="relative z-10 max-w-[1200px] mx-auto px-8 py-20 w-full flex flex-col lg:flex-row items-center gap-12">
           <div className="flex-1 text-white">
             <span className="inline-flex items-center gap-2 bg-white/10 border border-white/20 text-white text-xs font-semibold px-4 py-1.5 rounded-full mb-6">
               <span className="w-2 h-2 rounded-full bg-success" />
-              Clinique de Confiance
+              {t.clinicBadge}
             </span>
             <h1 className="text-5xl lg:text-6xl font-extrabold leading-tight mb-4">
               {t.heroTitle1}
@@ -51,13 +53,14 @@ export default function HomePage() {
               src={heroImg}
               alt="Codeva Clinic"
               className="w-full max-w-lg object-contain drop-shadow-2xl select-none"
+              fetchPriority="high"
             />
           </div>
         </div>
 
         {/* Stats row */}
         <div className="relative z-10 border-t border-white/10">
-          <div className="max-w-7xl mx-auto px-6 lg:px-12 py-8 grid grid-cols-2 lg:grid-cols-4 gap-6">
+          <div className="max-w-[1200px] mx-auto px-8 py-8 grid grid-cols-2 lg:grid-cols-4 gap-6">
             {stats.map((s, i) => (
               <div key={i} className="text-center text-white">
                 <p className="text-3xl font-extrabold">{s.num}</p>
@@ -70,9 +73,9 @@ export default function HomePage() {
 
       {/* ── Services ── */}
       <section className="py-20 bg-primary-subtle">
-        <div className="max-w-7xl mx-auto px-6 lg:px-12">
+        <div className="max-w-[1200px] mx-auto px-8">
           <div className="text-center mb-12">
-            <span className="text-xs font-bold tracking-widest text-primary uppercase">{t.servicesLabel}</span>
+            <span className="text-xs font-bold ltr:tracking-widest ltr:uppercase text-primary">{t.servicesLabel}</span>
             <h2 className="text-3xl lg:text-4xl font-extrabold text-accent mt-2">{t.servicesTitle}</h2>
             <p className="text-slate-500 mt-3 max-w-xl mx-auto">{t.servicesSub}</p>
           </div>
@@ -98,9 +101,9 @@ export default function HomePage() {
 
       {/* ── Why Choose Us ── */}
       <section className="py-20 bg-white">
-        <div className="max-w-7xl mx-auto px-6 lg:px-12">
+        <div className="max-w-[1200px] mx-auto px-8">
           <div className="text-center mb-12">
-            <span className="text-xs font-bold tracking-widest text-primary uppercase">{t.whyLabel}</span>
+            <span className="text-xs font-bold ltr:tracking-widest ltr:uppercase text-primary">{t.whyLabel}</span>
             <h2 className="text-3xl lg:text-4xl font-extrabold text-accent mt-2">{t.whyTitle}</h2>
             <p className="text-slate-500 mt-3 max-w-xl mx-auto">{t.whySub}</p>
           </div>
@@ -126,7 +129,7 @@ export default function HomePage() {
 
       {/* ── CTA Banner ── */}
       <section className="bg-primary py-16">
-        <div className="max-w-7xl mx-auto px-6 lg:px-12 text-center">
+        <div className="max-w-[1200px] mx-auto px-8 text-center">
           <h2 className="text-3xl lg:text-4xl font-extrabold text-white mb-3">{t.ctaBannerTitle}</h2>
           <p className="text-white/70 text-lg mb-8 max-w-lg mx-auto">{t.ctaBannerSub}</p>
           <Button variant="secondary" size="lg">{t.ctaBannerBtn}</Button>

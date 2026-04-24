@@ -10,10 +10,11 @@ function FacebookIcon({ size = 16 }: { size?: number }) {
 
 export function SocialSidebar() {
   return (
-    <div className="fixed left-0 top-1/2 -translate-y-1/2 z-40 flex flex-col gap-2 p-2 rtl:left-auto rtl:right-0">
+    <div className="fixed start-0 top-1/2 -translate-y-1/2 z-40 flex flex-col gap-2 p-2">
       <a
         href="#"
         aria-label="Facebook"
+        onClick={(e) => e.preventDefault()}
         className="w-10 h-10 flex items-center justify-center rounded-[10px] bg-white border border-[#E2E8F0] shadow-sm text-[#334155] transition-all duration-200 hover:bg-[#1877F2] hover:text-white hover:border-[#1877F2]"
       >
         <FacebookIcon size={16} />
@@ -21,6 +22,7 @@ export function SocialSidebar() {
       <a
         href="#"
         aria-label="WhatsApp"
+        onClick={(e) => e.preventDefault()}
         className="w-10 h-10 flex items-center justify-center rounded-[10px] bg-white border border-[#E2E8F0] shadow-sm text-[#334155] transition-all duration-200 hover:bg-[#25D366] hover:text-white hover:border-[#25D366]"
       >
         <MessageCircle size={16} />

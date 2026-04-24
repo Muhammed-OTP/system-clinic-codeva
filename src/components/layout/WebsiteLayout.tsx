@@ -8,9 +8,7 @@ export function WebsiteLayout() {
     <>
       <Navbar />
       <SocialSidebar />
-      <main>
-        <Outlet />
-      </main>
+      <Outlet />
       <Footer />
     </>
   )
