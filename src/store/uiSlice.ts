@@ -10,7 +10,7 @@ const savedLang = (typeof localStorage !== 'undefined' ? localStorage.getItem('l
 
 const uiSlice = createSlice({
   name: 'ui',
-  initialState: { lang: savedLang ?? 'fr' } as UIState,
+  initialState: { lang: savedLang ?? 'ar' } as UIState,
   reducers: {
     setLang(state, action: PayloadAction<Lang>) {
       state.lang = action.payload
