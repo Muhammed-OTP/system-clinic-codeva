@@ -1,19 +1,24 @@
 import { createSlice, type PayloadAction } from '@reduxjs/toolkit'
-import type { User } from '@/types/models'
+
+interface User {
+  id: number
+  email: string
+  name: string
+  role: 'admin' | 'doctor' | 'receptionist'
+}
 
 interface AuthState {
   user: User | null
   token: string | null
   isAuthenticated: boolean
+  isLoading: boolean
 }
 
-const savedToken = typeof localStorage !== 'undefined' ? localStorage.getItem('token') : null
-const savedUser = typeof localStorage !== 'undefined' ? localStorage.getItem('user') : null
-
 const initialState: AuthState = {
-  user: savedUser ? (JSON.parse(savedUser) as User) : null,
-  token: savedToken,
-  isAuthenticated: !!savedToken,
+  user: null,
+  token: null,
+  isAuthenticated: false,
+  isLoading: false,
 }
 
 const authSlice = createSlice({
@@ -24,18 +29,18 @@ const authSlice = createSlice({
       state.user = action.payload.user
       state.token = action.payload.token
       state.isAuthenticated = true
-      localStorage.setItem('token', action.payload.token)
-      localStorage.setItem('user', JSON.stringify(action.payload.user))
     },
     logout(state) {
       state.user = null
       state.token = null
       state.isAuthenticated = false
-      localStorage.removeItem('token')
-      localStorage.removeItem('user')
+      state.isLoading = false
+    },
+    setLoading(state, action: PayloadAction<boolean>) {
+      state.isLoading = action.payload
     },
   },
 })
 
-export const { setCredentials, logout } = authSlice.actions
+export const { setCredentials, logout, setLoading } = authSlice.actions
 export default authSlice.reducer
