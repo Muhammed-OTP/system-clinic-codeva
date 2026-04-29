@@ -1,0 +1,1148 @@
+<!DOCTYPE html>
+<html lang="fr" dir="ltr">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Audit Technique — CodevaSanté Frontend</title>
+<style>
+  /* ── Reset & Base ── */
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'Georgia', 'Times New Roman', serif;
+    font-size: 11pt;
+    line-height: 1.75;
+    color: #1a1a1a;
+    background: #fff;
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 60px 80px;
+  }
+
+  /* ── Cover Page ── */
+  .cover {
+    text-align: center;
+    padding: 80px 0 60px;
+    border-bottom: 2px solid #0d7b6b;
+    margin-bottom: 60px;
+    page-break-after: always;
+  }
+  .cover .doc-type {
+    font-family: 'Arial', sans-serif;
+    font-size: 13pt;
+    font-weight: 700;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: #0d7b6b;
+    margin-bottom: 12px;
+  }
+  .cover h1 {
+    font-size: 26pt;
+    font-weight: 900;
+    color: #1a1a1a;
+    line-height: 1.2;
+    margin-bottom: 8px;
+  }
+  .cover .subtitle {
+    font-size: 14pt;
+    color: #555;
+    margin-bottom: 4px;
+  }
+  .cover .project {
+    font-size: 12pt;
+    color: #777;
+    margin-bottom: 40px;
+  }
+  .cover .meta {
+    display: inline-block;
+    border: 1px solid #ccc;
+    padding: 20px 40px;
+    border-radius: 4px;
+    background: #f9f9f9;
+  }
+  .cover .meta p {
+    font-size: 10.5pt;
+    color: #444;
+    margin: 3px 0;
+  }
+  .cover .meta p strong { color: #1a1a1a; }
+
+  /* ── Table des matières ── */
+  .toc {
+    page-break-after: always;
+    margin-bottom: 60px;
+  }
+  .toc h2 {
+    font-size: 18pt;
+    color: #0d7b6b;
+    border-bottom: 1.5px solid #0d7b6b;
+    padding-bottom: 6px;
+    margin-bottom: 20px;
+  }
+  .toc ol {
+    list-style: none;
+    counter-reset: toc-counter;
+  }
+  .toc > ol > li {
+    counter-increment: toc-counter;
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    padding: 5px 0;
+    border-bottom: 1px dotted #ccc;
+    font-size: 10.5pt;
+  }
+  .toc > ol > li::before {
+    content: counter(toc-counter) ".";
+    font-weight: 700;
+    color: #0d7b6b;
+    margin-right: 10px;
+    min-width: 20px;
+  }
+  .toc .toc-title { flex: 1; }
+  .toc .toc-page {
+    font-weight: 600;
+    color: #555;
+    min-width: 30px;
+    text-align: right;
+  }
+  .toc .sub-item {
+    display: flex;
+    justify-content: space-between;
+    padding: 3px 0 3px 30px;
+    font-size: 10pt;
+    color: #555;
+    border-bottom: 1px dotted #e5e5e5;
+  }
+
+  /* ── Section Headers ── */
+  h2.section-title {
+    font-size: 17pt;
+    color: #0d7b6b;
+    border-bottom: 1.5px solid #0d7b6b;
+    padding-bottom: 6px;
+    margin: 40px 0 16px;
+  }
+  h3.subsection {
+    font-size: 12.5pt;
+    color: #1a1a1a;
+    margin: 24px 0 10px;
+    font-family: 'Arial', sans-serif;
+    font-weight: 700;
+  }
+  h4.subsubsection {
+    font-size: 11pt;
+    font-style: italic;
+    font-weight: 700;
+    color: #333;
+    margin: 18px 0 8px;
+  }
+
+  /* ── Paragraphs ── */
+  p { margin-bottom: 10px; text-align: justify; }
+
+  /* ── Lists ── */
+  ul, ol { margin: 8px 0 12px 24px; }
+  li { margin-bottom: 4px; line-height: 1.6; }
+
+  /* ── File Header ── */
+  .file-header {
+    background: #f4f4f4;
+    border-left: 4px solid #0d7b6b;
+    padding: 10px 16px;
+    margin: 28px 0 12px;
+    font-family: 'Courier New', monospace;
+    font-size: 10.5pt;
+    font-weight: 700;
+    color: #1a1a1a;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  .file-header .verdict {
+    font-family: 'Arial', sans-serif;
+    font-size: 9.5pt;
+    font-weight: 700;
+    padding: 3px 10px;
+    border-radius: 12px;
+  }
+  .verdict.bloquant { background: #fee2e2; color: #b91c1c; }
+  .verdict.grave    { background: #fff3cd; color: #92400e; }
+  .verdict.moyen    { background: #fef9c3; color: #713f12; }
+  .verdict.ok       { background: #dcfce7; color: #166534; }
+
+  /* ── Callout Boxes ── */
+  .callout {
+    border: 1px solid;
+    border-radius: 4px;
+    padding: 12px 16px;
+    margin: 14px 0;
+    font-size: 10.5pt;
+  }
+  .callout.danger  { border-color: #f87171; background: #fff5f5; }
+  .callout.warning { border-color: #fbbf24; background: #fffbeb; }
+  .callout.info    { border-color: #60a5fa; background: #eff6ff; }
+  .callout.success { border-color: #4ade80; background: #f0fdf4; }
+  .callout strong { display: block; margin-bottom: 4px; font-family: 'Arial', sans-serif; }
+
+  /* ── Code Blocks ── */
+  pre {
+    background: #f8f8f8;
+    border: 1px solid #e0e0e0;
+    border-radius: 4px;
+    padding: 12px 16px;
+    font-family: 'Courier New', monospace;
+    font-size: 9pt;
+    overflow-x: auto;
+    margin: 10px 0 14px;
+    line-height: 1.5;
+  }
+  code {
+    font-family: 'Courier New', monospace;
+    font-size: 9.5pt;
+    background: #f1f1f1;
+    padding: 1px 5px;
+    border-radius: 3px;
+  }
+  pre code { background: none; padding: 0; font-size: 9pt; }
+
+  /* ── Tables ── */
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 16px 0;
+    font-size: 10pt;
+  }
+  thead th {
+    background: #0d7b6b;
+    color: #fff;
+    padding: 8px 12px;
+    text-align: left;
+    font-family: 'Arial', sans-serif;
+    font-weight: 700;
+    font-size: 9.5pt;
+  }
+  tbody td {
+    padding: 7px 12px;
+    border-bottom: 1px solid #e5e5e5;
+    vertical-align: top;
+  }
+  tbody tr:nth-child(even) { background: #f9f9f9; }
+  .crit-bloquant { color: #b91c1c; font-weight: 700; }
+  .crit-grave    { color: #92400e; font-weight: 700; }
+  .crit-moyen    { color: #713f12; font-weight: 600; }
+  .crit-info     { color: #1d4ed8; }
+
+  /* ── Section number ── */
+  .sec-num {
+    color: #0d7b6b;
+    font-size: 13pt;
+    font-weight: 700;
+    margin-right: 8px;
+  }
+
+  /* ── Page Breaks ── */
+  .page-break { page-break-after: always; }
+
+  /* ── Footer ── */
+  .doc-footer {
+    margin-top: 60px;
+    padding-top: 16px;
+    border-top: 1px solid #ccc;
+    font-size: 9pt;
+    color: #888;
+    text-align: center;
+  }
+
+  /* ── Print ── */
+  @media print {
+    body { padding: 40px 60px; font-size: 10.5pt; }
+    .cover { page-break-after: always; }
+    .toc   { page-break-after: always; }
+    h2.section-title { page-break-before: auto; }
+    pre { page-break-inside: avoid; }
+    table { page-break-inside: avoid; }
+  }
+
+  .verdict-global { color: #b91c1c; }
+</style>
+</head>
+<body>
+
+<!-- ══════════════════════════════════════════════ COVER PAGE -->
+<div class="cover">
+  <div class="doc-type">Rapport d'Audit Technique</div>
+  <h1>Audit Technique Frontend<br>CodevaSanté</h1>
+  <p class="subtitle">React + TypeScript + Vite + TailwindCSS v4 + Redux Toolkit</p>
+  <p class="project">Projet CodevaSanté — Sprint 1</p>
+  <div class="meta">
+    <p><strong>Date :</strong> 29 avril 2026</p>
+    <p><strong>Auditeur :</strong> Développeur Full-Stack Senior</p>
+    <p><strong>Stack auditée :</strong> React 19 class="verdict-global v4 / DRF / SQLite</p>
+    <p><strong>Branche :</strong> main (après merge PR #11)</p>
+    <p><strong>Verdict global :</strong> <strong style="color:#b91c1c">BLOQUANT avant mise en production</strong></p>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════════ TABLE DES MATIÈRES -->
+<div class="toc">
+  <h2>Table des matières</h2>
+  <ol>
+    <li>
+      <span class="toc-title">Objectif du document</span>
+      <span class="toc-page">3</span>
+    </li>
+    <li>
+      <span class="toc-title">Résumé exécutif</span>
+      <span class="toc-page">3</span>
+    </li>
+    <li>
+      <span class="toc-title">Audit fichier par fichier</span>
+      <span class="toc-page">4</span>
+    </li>
+    <div class="sub-item"><span>3.1 src/lib/axios.ts</span><span>4</span></div>
+    <div class="sub-item"><span>3.2 src/features/auth/authSlice.ts</span><span>4</span></div>
+    <div class="sub-item"><span>3.3 src/features/patient/patientSlice.ts</span><span>5</span></div>
+    <div class="sub-item"><span>3.4 src/store/rootReducer.ts</span><span>6</span></div>
+    <div class="sub-item"><span>3.5 src/store/uiSlice.ts</span><span>6</span></div>
+    <div class="sub-item"><span>3.6 src/services/authService.ts</span><span>7</span></div>
+    <div class="sub-item"><span>3.7 src/services/patientService.ts</span><span>7</span></div>
+    <div class="sub-item"><span>3.8 src/types/models.ts</span><span>8</span></div>
+    <div class="sub-item"><span>3.9 src/types/api.ts</span><span>8</span></div>
+    <div class="sub-item"><span>3.10 src/routes/ProtectedRoute.tsx</span><span>9</span></div>
+    <div class="sub-item"><span>3.11 src/routes/AppRoutes.tsx</span><span>9</span></div>
+    <div class="sub-item"><span>3.12 src/routes/index.tsx</span><span>9</span></div>
+    <div class="sub-item"><span>3.13 src/components/layout/PatientLayout.tsx</span><span>10</span></div>
+    <div class="sub-item"><span>3.14 Pages patient (src/pages/app/patient/)</span><span>10</span></div>
+    <div class="sub-item"><span>3.15 Fichiers morts (ServicesPage, SpecialitiesPage)</span><span>11</span></div>
+    <div class="sub-item"><span>3.16 src/constants/translations.ts</span><span>11</span></div>
+    <div class="sub-item"><span>3.17 index.html</span><span>12</span></div>
+    <li>
+      <span class="toc-title">Tableau de criticité global</span>
+      <span class="toc-page">12</span>
+    </li>
+    <li>
+      <span class="toc-title">Actions immédiates obligatoires</span>
+      <span class="toc-page">13</span>
+    </li>
+    <li>
+      <span class="toc-title">Ordre de correction recommandé</span>
+      <span class="toc-page">14</span>
+    </li>
+    <li>
+      <span class="toc-title">Conclusion</span>
+      <span class="toc-page">14</span>
+    </li>
+  </ol>
+</div>
+
+<!-- ══════════════════════════════════════════════ SECTION 1 -->
+<h2 class="section-title"><span class="sec-num">1</span>Objectif du document</h2>
+
+<p>
+Ce document constitue un audit technique complet du frontend React du projet CodevaSanté,
+réalisé après le merge de la Pull Request #11 sur la branche <code>main</code>.
+</p>
+<p>
+L'objectif est d'identifier <strong>tous les problèmes bloquants, graves et mineurs</strong>
+présents dans le code actuel avant de continuer le développement du parcours patient (Sprint 1)
+et, a fortiori, avant de passer aux interfaces médecin, réceptionniste et admin.
+</p>
+<p>
+Contrairement à une revue de code superficielle, cet audit examine chaque fichier source,
+vérifie la cohérence entre les couches (types → services → Redux → composants), et identifie
+les violations de la méthode Ahmed Yahya décrite dans le Guide de Prompts IA Générative.
+</p>
+
+<div class="callout warning">
+  <strong>⚠ Avertissement</strong>
+  Plusieurs problèmes identifiés dans ce rapport rendent l'application <strong>non fonctionnelle
+  au-delà d'un seul chargement de page</strong>. Ces points doivent être corrigés avant toute
+  démonstration ou déploiement sur Vercel.
+</div>
+
+<!-- ══════════════════════════════════════════════ SECTION 2 -->
+<h2 class="section-title"><span class="sec-num">2</span>Résumé exécutif</h2>
+
+<p>
+L'analyse du code source révèle <strong>2 problèmes bloquants</strong>, <strong>4 problèmes
+graves</strong> et <strong>7 problèmes mineurs</strong> répartis sur 17 fichiers examinés.
+</p>
+
+<p>
+Le problème le plus critique est l'<strong>absence totale de persistance de l'authentification</strong>.
+Le token JWT d'accès et le token de rafraîchissement sont stockés uniquement en mémoire Redux.
+À chaque rechargement de page, l'état Redux est réinitialisé et l'utilisateur se retrouve
+déconnecté. Cela rend le parcours patient inutilisable en conditions réelles.
+</p>
+
+<p>
+Le second problème bloquant est l'utilisation dans <code>PatientLayout.tsx</code> de
+<strong>clés de traduction inexistantes</strong> dans <code>translations.ts</code>
+(<code>navPatientHome</code>, <code>navPatientProfile</code>, <code>navPatientDoctors</code>,
+<code>navPatientAppointments</code>, <code>navLogout</code>). TypeScript strict étant activé,
+le build de production échoue.
+</p>
+
+<p>
+Par ailleurs, la méthode de développement par phases d'Ahmed Yahya a été partiellement
+violée : des pages patient complètes ont été générées et committées avant que les services
+API aient été validés avec de vrais tokens JWT en Postman, introduisant un risque de
+divergence silencieuse entre les types frontend et les réponses backend réelles.
+</p>
+
+<!-- ══════════════════════════════════════════════ SECTION 3 -->
+<div class="page-break"></div>
+<h2 class="section-title"><span class="sec-num">3</span>Audit fichier par fichier</h2>
+
+<!-- 3.1 -->
+<div class="file-header">
+  src/lib/axios.ts
+  <span class="verdict ok">✓ CORRECT</span>
+</div>
+
+<p>
+C'est le fichier le mieux écrit du projet. La logique de rafraîchissement silencieux est
+implémentée correctement : utilisation de <code>axios.post</code> natif (et non
+<code>apiClient</code>) pour éviter la récursion infinie dans l'intercepteur, file d'attente
+pour les requêtes concurrentes en attente de token, logout forcé uniquement si le refresh
+échoue.
+</p>
+
+<h4 class="subsubsection">Problème mineur — Duplication de BASE_URL</h4>
+<p>
+La constante <code>BASE_URL</code> est définie ici ET dans <code>authService.ts</code> :
+</p>
+<pre><code>// axios.ts
+const BASE_URL = import.meta.env.VITE_API_URL ?? 'https://codevasante.pythonanywhere.com/api'
+
+// authService.ts — copie exacte
+const BASE_URL = import.meta.env.VITE_API_URL ?? 'https://codevasante.pythonanywhere.com/api'</code></pre>
+<p>
+Deux sources de vérité pour la même valeur. Si l'URL de production change, l'un des deux
+fichiers sera oublié.
+<strong>Correction :</strong> exporter <code>BASE_URL</code> depuis <code>axios.ts</code> et
+l'importer dans <code>authService.ts</code>.
+</p>
+
+<!-- 3.2 -->
+<div class="file-header">
+  src/features/auth/authSlice.ts
+  <span class="verdict bloquant">🔴 BLOQUANT</span>
+</div>
+
+<div class="callout danger">
+  <strong>🔴 Bug critique — Aucune persistance de l'authentification</strong>
+  Le token JWT vit uniquement en mémoire Redux. Chaque rechargement de page réinitialise
+  l'état à <code>initialState</code>. L'utilisateur est systématiquement déconnecté.
+  L'application est inutilisable en conditions réelles.
+</div>
+
+<pre><code>const initialState: AuthState = {
+  user: null,
+  token: null,        // ← perdu au refresh
+  refreshToken: null, // ← perdu au refresh
+  isAuthenticated: false,
+}</code></pre>
+
+<p>
+Aucune lecture ni écriture dans <code>localStorage</code> ou <code>sessionStorage</code>.
+Aucun <code>redux-persist</code> configuré dans le store. Le comportement observé est le
+suivant :
+</p>
+<ol>
+  <li>L'utilisateur se connecte → <code>setCredentials</code> est appelé → state Redux peuplé.</li>
+  <li>L'utilisateur navigue vers une page patient → fonctionne (Redux est en mémoire).</li>
+  <li>L'utilisateur rafraîchit la page → Redux se réinitialise → <code>isAuthenticated: false</code>.</li>
+  <li><code>ProtectedRoute</code> détecte l'état non authentifié → redirige vers <code>/app/login</code>.</li>
+  <li>L'utilisateur est renvoyé à la page de connexion à chaque rechargement.</li>
+</ol>
+
+<p><strong>Correction requise :</strong> implémenter la persistance dans le slice via
+<code>localStorage</code> (load à l'initialisation, save dans chaque reducer concerné)
+ou installer <code>redux-persist</code> avec une configuration blacklist pour les données sensibles.
+</p>
+
+<!-- 3.3 -->
+<div class="file-header">
+  src/features/patient/patientSlice.ts
+  <span class="verdict grave">🟠 GRAVE</span>
+</div>
+
+<p>
+La structure générale est correcte. Les thunks <code>createAsyncThunk</code> sont bien
+séparés, les matchers <code>isPending</code> et <code>isRejected</code> réduisent la
+duplication. Néanmoins trois problèmes sont identifiés.
+</p>
+
+<h4 class="subsubsection">Problème 1 — cancelAppointment.fulfilled ne met pas à jour la liste</h4>
+<pre><code>.addCase(cancelAppointment.fulfilled, (state) => {
+  state.loading = false
+  // list re-fetch required — no GET /appointments/me/ endpoint yet
+})</code></pre>
+<p>
+Quand un patient annule un rendez-vous, la liste Redux n'est pas mise à jour.
+L'UI ne reflète pas le changement. Sans <code>GET /appointments/me/</code>, une re-fetch
+n'est pas possible, mais au minimum le statut du RDV annulé devrait être mis à jour
+localement par son <code>id</code>.
+</p>
+
+<h4 class="subsubsection">Problème 2 — Pages générées avant validation des services</h4>
+<p>
+Les pages patient (<code>PatientProfilePage</code>, <code>DoctorsListPage</code>, etc.)
+appellent ces thunks sans que les endpoints aient été testés avec de vrais tokens JWT
+en Postman. Si la structure JSON réelle du backend diffère légèrement des types définis
+(<code>patient.types.ts</code>, <code>doctor.types.ts</code>), les pages seront
+silencieusement vides ou produiront des erreurs runtime invisibles à la compilation.
+</p>
+
+<h4 class="subsubsection">Problème 3 — Absence de reset centralisé au logout</h4>
+<p>
+<code>clearPatientState</code> est exporté et appelé dans <code>PatientLayout</code> lors
+du logout. Mais il n'existe pas de mécanisme centralisé. Quand les slices médecin,
+réceptionniste et admin seront ajoutés, chaque logout devra manuellement appeler
+<code>clearXxxState()</code> pour chaque slice. Risque de fuite de données entre sessions.
+</p>
+
+<!-- 3.4 -->
+<div class="file-header">
+  src/store/rootReducer.ts
+  <span class="verdict grave">🟠 Violation de méthode</span>
+</div>
+
+<pre><code>import patientReducer from '@/features/patient/patientSlice'
+
+const rootReducer = combineReducers({
+  auth: authReducer,
+  ui: uiReducer,
+  patient: patientReducer, // ← ajouté avant validation Phase 7
+})</code></pre>
+
+<p>
+Le reducer patient a été ajouté dans le store alors que la Phase 7 de la méthode Ahmed
+Yahya (« Patient Slice — créer Redux pour médecins, profils, réservations ») n'avait pas
+encore été officiellement complétée et validée. Les thunks sont actifs et dispatchables
+depuis des composants avant que les services qu'ils appellent aient été testés avec de
+vrais tokens JWT.
+</p>
+
+<!-- 3.5 -->
+<div class="file-header">
+  src/store/uiSlice.ts
+  <span class="verdict moyen">🟡 Anti-pattern</span>
+</div>
+
+<h4 class="subsubsection">Problème 1 — Side effect DOM dans un reducer Redux</h4>
+<pre><code>setLang(state, action: PayloadAction&lt;Lang&gt;) {
+  state.lang = action.payload
+  localStorage.setItem('lang', action.payload)           // ← side effect
+  document.documentElement.setAttribute('lang', ...)    // ← side effect DOM
+  document.documentElement.setAttribute('dir', ...)     // ← side effect DOM
+}</code></pre>
+<p>
+Les reducers Redux doivent être des fonctions pures. Modifier <code>document.documentElement</code>
+et <code>localStorage</code> directement dans un reducer viole ce principe fondamental.
+Ces opérations devraient être dans un middleware ou un effet React.
+</p>
+
+<h4 class="subsubsection">Problème 2 — Guard SSR inutile</h4>
+<pre><code>const savedLang = (typeof localStorage !== 'undefined'
+  ? localStorage.getItem('lang')
+  : null) as Lang | null</code></pre>
+<p>
+Ce guard <code>typeof localStorage !== 'undefined'</code> est un pattern de défense contre
+le Server-Side Rendering. CodevaSanté est une application Vite 100% client-side.
+<code>localStorage</code> est toujours disponible. Ce code est du cargo-cult sans aucune
+utilité dans ce contexte.
+</p>
+
+<!-- 3.6 -->
+<div class="file-header">
+  src/services/authService.ts
+  <span class="verdict grave">🟠 DANGEREUX</span>
+</div>
+
+<h4 class="subsubsection">Problème 1 — Fonction refresh() publique crée un risque de race condition</h4>
+<pre><code>refresh: (refreshToken: string) =>
+  axios
+    .post&lt;{ access: string }&gt;(`${BASE_URL}/auth/refresh/`, { refresh: refreshToken })
+    .then((r) => r.data),</code></pre>
+
+<div class="callout danger">
+  <strong>🔴 Race condition potentielle</strong>
+  L'intercepteur dans <code>axios.ts</code> gère déjà le refresh automatiquement avec
+  une queue pour les appels concurrents. Si du code appelle <code>authService.refresh()</code>
+  directement en parallèle de l'intercepteur, deux appels <code>POST /auth/refresh/</code>
+  sont lancés avec le même <code>refreshToken</code>. Un token de rafraîchissement JWT ne
+  peut être utilisé qu'une seule fois (rotation). Le second appel retourne 401 → logout
+  intempestif.
+</div>
+
+<p>Cette fonction ne devrait pas exister publiquement. La logique de refresh appartient
+exclusivement à <code>axios.ts</code>.</p>
+
+<h4 class="subsubsection">Problème 2 — BASE_URL dupliquée (déjà signalé en §3.1)</h4>
+
+<!-- 3.7 -->
+<div class="file-header">
+  src/services/patientService.ts
+  <span class="verdict ok">✓ CORRECT</span>
+</div>
+
+<p>
+Fichier propre et exemplaire. Chaque méthode est une ligne, les types sont correctement
+importés, le commentaire sur <code>getMyAppointments</code> est honnête et informatif.
+Rien à redire sur ce fichier. C'est le standard que tous les autres services devront
+suivre.
+</p>
+
+<!-- 3.8 -->
+<div class="file-header">
+  src/types/models.ts
+  <span class="verdict bloquant">🔴 À SUPPRIMER IMMÉDIATEMENT</span>
+</div>
+
+<div class="callout danger">
+  <strong>🔴 Types contradictoires avec les types feature-split</strong>
+  Ce fichier définit des interfaces <code>Doctor</code> et <code>Appointment</code>
+  qui contredisent directement <code>doctor.types.ts</code> et <code>appointment.types.ts</code>.
+</div>
+
+<pre><code>// models.ts — FAUX
+export interface Doctor {
+  id: number
+  name: string       // ← Le backend retourne full_name, pas name
+  specialty: string  // ← Manquent bio, years_of_experience, available
+  phone: string
+  email: string
+}
+
+// doctor.types.ts — CORRECT
+export interface Doctor {
+  id: number
+  full_name: string
+  email: string
+  phone: string
+  specialty: string
+  bio: string
+  years_of_experience: number
+  available: boolean
+}</code></pre>
+
+<p>
+Si un développeur importe <code>Doctor</code> depuis <code>models.ts</code> au lieu de
+<code>doctor.types.ts</code>, TypeScript accepte le code mais les données runtime ne
+correspondent pas. Le bug est silencieux et difficile à diagnostiquer. Ce fichier doit
+être supprimé sans délai.
+</p>
+
+<!-- 3.9 -->
+<div class="file-header">
+  src/types/api.ts
+  <span class="verdict moyen">🟡 Inutilisé et inexact</span>
+</div>
+
+<pre><code>export interface ApiResponse&lt;T&gt; {
+  data: T
+  message: string
+  success: boolean  // ← CE CHAMP N'EXISTE PAS DANS LE BACKEND DRF
+}</code></pre>
+
+<p>
+Le backend Django REST Framework retourne <code>{ message: string, data: T }</code> pour
+les succès. Le champ <code>success: boolean</code> n'existe pas. Ce fichier n'est importé
+nulle part dans le code actuel — ce qui montre qu'il n'est pas utilisé. Il sera source de
+confusion si un développeur s'y réfère pour typer une réponse API.
+</p>
+
+<!-- 3.10 -->
+<div class="file-header">
+  src/routes/ProtectedRoute.tsx
+  <span class="verdict ok">✓ CORRECT</span>
+</div>
+
+<p>
+Implémentation propre et minimaliste. Deux vérifications séquentielles :
+<code>isAuthenticated</code> pour l'accès général, puis <code>user.role</code> pour la
+vérification du rôle. Les redirections vers <code>/app/login</code> et
+<code>/app/unauthorized</code> sont correctes. Aucun problème identifié.
+</p>
+
+<!-- 3.11 -->
+<div class="file-header">
+  src/routes/AppRoutes.tsx
+  <span class="verdict moyen">🟡 À surveiller</span>
+</div>
+
+<p>
+La structure de routes imbriquées avec <code>PatientLayout</code> comme parent et
+<code>Outlet</code> est correcte et élégante. Cependant :
+</p>
+
+<h4 class="subsubsection">Route /patient/appointments active mais non fonctionnelle</h4>
+<p>
+<code>MyAppointmentsPage</code> est montée sur <code>/app/patient/appointments</code>
+alors que l'endpoint backend <code>GET /api/appointments/me/</code> n'existe pas encore.
+Un patient authentifié qui navigue vers cette route verra une page "Coming Soon" sans
+aucun feedback clair sur la raison. La route devrait être désactivée ou rediriger vers
+la page d'accueil tant que l'endpoint backend n'est pas disponible.
+</p>
+
+<!-- 3.12 -->
+<div class="file-header">
+  src/routes/index.tsx
+  <span class="verdict moyen">🟡 Ordre suspect</span>
+</div>
+
+<pre><code>&lt;Route path="/*"    element={&lt;WebsiteRoutes /&gt;} /&gt;  {/* générique en premier */}
+&lt;Route path="/app/*" element={&lt;AppRoutes /&gt;} /&gt;      {/* spécifique en second */}</code></pre>
+
+<p>
+React Router v7 utilise la spécificité (non l'ordre) pour le matching. <code>/app/login</code>
+matchera correctement <code>AppRoutes</code>. Mais déclarer le pattern générique avant le
+pattern spécifique est une mauvaise pratique. Si le comportement du router change dans une
+version future, ce code sera silencieusement cassé. L'ordre correct : plus spécifique d'abord.
+</p>
+
+<!-- 3.13 -->
+<div class="file-header">
+  src/components/layout/PatientLayout.tsx
+  <span class="verdict bloquant">🔴 BLOQUANT — Build cassé</span>
+</div>
+
+<div class="callout danger">
+  <strong>🔴 Clés de traduction inexistantes — tsc -b échoue</strong>
+  PatientLayout référence 5 clés qui n'existent pas dans <code>translations.ts</code>.
+  Avec TypeScript strict activé et <code>TranslationKey = keyof typeof translations.fr</code>,
+  le build de production échoue avec des erreurs de propriété inexistante.
+</div>
+
+<pre><code>const navLinks = [
+  { label: t.navPatientHome,         ... },  // ← N'EXISTE PAS
+  { label: t.navPatientProfile,      ... },  // ← N'EXISTE PAS
+  { label: t.navPatientDoctors,      ... },  // ← N'EXISTE PAS
+  { label: t.navPatientAppointments, ... },  // ← N'EXISTE PAS
+]
+// ...
+&lt;span&gt;{t.navLogout}&lt;/span&gt;                  // ← N'EXISTE PAS</code></pre>
+
+<p>
+Ces 5 clés doivent être ajoutées dans les deux objets (<code>fr</code> et <code>ar</code>)
+de <code>translations.ts</code> avant que le build puisse passer.
+</p>
+
+<!-- 3.14 -->
+<div class="file-header">
+  src/pages/app/patient/ (6 fichiers)
+  <span class="verdict grave">🟠 Générés hors ordre</span>
+</div>
+
+<p>
+L'ensemble des pages patient (<code>PatientHomePage</code>, <code>PatientProfilePage</code>,
+<code>DoctorsListPage</code>, <code>DoctorDetailPage</code>, <code>CreateAppointmentPage</code>,
+<code>MyAppointmentsPage</code>) a été généré et committé <strong>avant que les endpoints
+backend aient été validés avec de vrais tokens JWT en Postman</strong>, en violation directe
+de la checklist du Guide de Prompts IA Générative :
+</p>
+
+<div class="callout warning">
+  <strong>Checklist Ahmed Yahya — Points non respectés</strong>
+  <ul>
+    <li>☐ Le endpoint est testé avec un vrai token JWT</li>
+    <li>☐ Le payload JSON est connu</li>
+    <li>☐ La réponse JSON est connue</li>
+  </ul>
+</div>
+
+<p>Conséquences concrètes par page :</p>
+<ul>
+  <li>
+    <strong>DoctorDetailPage</strong> — utilise <code>params.id</code> dans l'URL
+    (<code>/app/patient/doctors/:id</code>) mais lit <code>selectedDoctor</code> depuis Redux.
+    Le paramètre <code>:id</code> n'est jamais utilisé. Un accès direct par URL (lien partagé,
+    favori) retourne une page vide. L'URL est mensongère.
+  </li>
+  <li>
+    <strong>PatientProfilePage</strong> — si <code>GET /patients/me/</code> retourne une
+    structure légèrement différente de <code>PatientProfile</code>, la page sera vide sans
+    aucune erreur TypeScript.
+  </li>
+  <li>
+    <strong>CreateAppointmentPage</strong> — le champ <code>time</code> utilise
+    <code>&lt;input type="time"&gt;</code> qui retourne <code>HH:MM</code>. L'API attend
+    <code>HH:MM</code>. Compatible pour l'instant, mais aucune validation Zod n'est en place.
+  </li>
+</ul>
+
+<!-- 3.15 -->
+<div class="file-header">
+  src/pages/website/ServicesPage.tsx + SpecialitiesPage.tsx
+  <span class="verdict moyen">🟡 Fichiers morts</span>
+</div>
+
+<p>
+Les routes <code>/services</code> et <code>/specialities</code> ont été supprimées de
+<code>WebsiteRoutes.tsx</code> lors du nettoyage nav (PR #10). Ces deux fichiers existent
+toujours dans le repository. Ils compilent, occupent de l'espace cognitif, et peuvent être
+accidentellement réimportés par un développeur. À supprimer.
+</p>
+
+<!-- 3.16 -->
+<div class="file-header">
+  src/constants/translations.ts
+  <span class="verdict grave">🟠 Clés manquantes</span>
+</div>
+
+<p>
+En plus des 5 clés manquantes signalées dans <code>PatientLayout</code>, il convient de
+vérifier systématiquement toutes les clés référencées dans les pages patient nouvellement
+créées. Les clés candidates potentiellement absentes incluent des libellés de formulaires,
+états de chargement, et messages de succès/erreur spécifiques au dashboard patient.
+</p>
+<p>
+La règle du projet est explicite : <em>« All keys in translations.ts — no hardcoded strings »</em>.
+Un passage complet via <code>tsc -b</code> est le seul moyen d'identifier exhaustivement
+les clés manquantes.
+</p>
+
+<!-- 3.17 -->
+<div class="file-header">
+  index.html
+  <span class="verdict moyen">🟡 Flash RTL → LTR</span>
+</div>
+
+<pre><code>&lt;html lang="ar" dir="rtl"&gt;</code></pre>
+
+<p>
+La direction RTL est codée en dur dans le HTML. <code>uiSlice.setLang</code> corrige
+<code>document.documentElement</code> via un side effect au démarrage dans <code>main.tsx</code>.
+Pour un utilisateur ayant sauvegardé <code>lang=fr</code> en localStorage, la séquence est :
+</p>
+<ol>
+  <li>Page se charge en RTL (HTML statique).</li>
+  <li>JavaScript s'exécute, Redux dispatch <code>setLang('fr')</code>.</li>
+  <li>DOM bascule en LTR.</li>
+</ol>
+<p>
+Ce flash RTL→LTR est perceptible, surtout sur connexion lente. Non bloquant, mais dégradant
+pour l'expérience utilisateur en mode français.
+</p>
+
+<!-- ══════════════════════════════════════════════ SECTION 4 -->
+<div class="page-break"></div>
+<h2 class="section-title"><span class="sec-num">4</span>Tableau de criticité global</h2>
+
+<table>
+  <thead>
+    <tr>
+      <th>#</th>
+      <th>Fichier</th>
+      <th>Problème</th>
+      <th>Criticité</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>1</td>
+      <td><code>authSlice.ts</code></td>
+      <td>Aucune persistance → déconnexion à chaque rechargement de page</td>
+      <td class="crit-bloquant">🔴 BLOQUANT</td>
+    </tr>
+    <tr>
+      <td>2</td>
+      <td><code>PatientLayout.tsx</code></td>
+      <td>5 clés de traduction inexistantes → <code>tsc -b</code> échoue, build cassé</td>
+      <td class="crit-bloquant">🔴 BLOQUANT</td>
+    </tr>
+    <tr>
+      <td>3</td>
+      <td><code>types/models.ts</code></td>
+      <td>Types Doctor et Appointment contradictoires avec les types feature-split</td>
+      <td class="crit-bloquant">🔴 Supprimer</td>
+    </tr>
+    <tr>
+      <td>4</td>
+      <td><code>authService.ts</code></td>
+      <td>Fonction <code>refresh()</code> publique → race condition avec l'intercepteur</td>
+      <td class="crit-grave">🟠 Dangereux</td>
+    </tr>
+    <tr>
+      <td>5</td>
+      <td><code>authService.ts</code></td>
+      <td><code>BASE_URL</code> dupliquée depuis <code>axios.ts</code></td>
+      <td class="crit-grave">🟠 Grave</td>
+    </tr>
+    <tr>
+      <td>6</td>
+      <td><code>patientSlice.ts</code></td>
+      <td>Pages générées avant validation backend — risque divergence types/JSON réel</td>
+      <td class="crit-grave">🟠 Grave</td>
+    </tr>
+    <tr>
+      <td>7</td>
+      <td><code>rootReducer.ts</code></td>
+      <td>Patient reducer ajouté avant que la Phase 7 soit validée (violation méthode)</td>
+      <td class="crit-grave">🟠 Méthode</td>
+    </tr>
+    <tr>
+      <td>8</td>
+      <td><code>translations.ts</code></td>
+      <td>Clés patient dashboard manquantes (PatientLayout + pages dashboard)</td>
+      <td class="crit-grave">🟠 Grave</td>
+    </tr>
+    <tr>
+      <td>9</td>
+      <td><code>types/api.ts</code></td>
+      <td>Champ <code>success: boolean</code> inexistant dans le backend DRF</td>
+      <td class="crit-moyen">🟡 Inutilisé</td>
+    </tr>
+    <tr>
+      <td>10</td>
+      <td><code>uiSlice.ts</code></td>
+      <td>Side effect DOM dans reducer + guard SSR inutile dans app client-only</td>
+      <td class="crit-moyen">🟡 Anti-pattern</td>
+    </tr>
+    <tr>
+      <td>11</td>
+      <td><code>routes/index.tsx</code></td>
+      <td>Route générique <code>/*</code> déclarée avant <code>/app/*</code></td>
+      <td class="crit-moyen">🟡 Ordre</td>
+    </tr>
+    <tr>
+      <td>12</td>
+      <td><code>AppRoutes.tsx</code></td>
+      <td>Route <code>/patient/appointments</code> active mais page non fonctionnelle</td>
+      <td class="crit-moyen">🟡 UX</td>
+    </tr>
+    <tr>
+      <td>13</td>
+      <td><code>DoctorDetailPage.tsx</code></td>
+      <td>Paramètre URL <code>:id</code> ignoré — accès direct par URL impossible</td>
+      <td class="crit-moyen">🟡 UX</td>
+    </tr>
+    <tr>
+      <td>14</td>
+      <td><code>ServicesPage.tsx</code></td>
+      <td>Fichier mort — route supprimée mais fichier toujours présent</td>
+      <td class="crit-moyen">🟡 Nettoyer</td>
+    </tr>
+    <tr>
+      <td>15</td>
+      <td><code>SpecialitiesPage.tsx</code></td>
+      <td>Fichier mort — route supprimée mais fichier toujours présent</td>
+      <td class="crit-moyen">🟡 Nettoyer</td>
+    </tr>
+    <tr>
+      <td>16</td>
+      <td><code>patientSlice.ts</code></td>
+      <td>Pas de reset centralisé au logout — dette pour les slices futurs</td>
+      <td class="crit-moyen">🟡 Dette</td>
+    </tr>
+    <tr>
+      <td>17</td>
+      <td><code>index.html</code></td>
+      <td>Flash RTL→LTR visible pour les utilisateurs en mode français</td>
+      <td class="crit-info">🔵 Cosmétique</td>
+    </tr>
+  </tbody>
+</table>
+
+<!-- ══════════════════════════════════════════════ SECTION 5 -->
+<h2 class="section-title"><span class="sec-num">5</span>Actions immédiates obligatoires</h2>
+
+<p>
+Les actions suivantes doivent être exécutées <strong>avant de continuer tout développement</strong>.
+Elles sont listées dans l'ordre de priorité décroissante.
+</p>
+
+<h3 class="subsection">Action 1 — Ajouter la persistance auth (BLOQUANT)</h3>
+<p>
+Dans <code>authSlice.ts</code>, charger les tokens depuis <code>localStorage</code> à
+l'initialisation et les sauvegarder dans chaque reducer concerné :
+</p>
+<pre><code>// Chargement à l'init
+const storedToken   = localStorage.getItem('token')
+const storedRefresh = localStorage.getItem('refreshToken')
+const storedUser    = localStorage.getItem('user')
+
+const initialState: AuthState = {
+  user:            storedUser  ? JSON.parse(storedUser) : null,
+  token:           storedToken  ?? null,
+  refreshToken:    storedRefresh ?? null,
+  isAuthenticated: !!storedToken,
+}
+
+// Dans setCredentials :
+localStorage.setItem('token',        action.payload.token)
+localStorage.setItem('refreshToken', action.payload.refreshToken)
+localStorage.setItem('user',         JSON.stringify(action.payload.user))
+
+// Dans setToken :
+localStorage.setItem('token', action.payload)
+
+// Dans logout :
+localStorage.removeItem('token')
+localStorage.removeItem('refreshToken')
+localStorage.removeItem('user')</code></pre>
+
+<h3 class="subsection">Action 2 — Ajouter les clés manquantes dans translations.ts (BLOQUANT)</h3>
+<p>
+Ajouter dans les deux objets (<code>fr</code> et <code>ar</code>) les clés suivantes
+(au minimum) :
+</p>
+<pre><code>// Français
+navPatientHome:         'Accueil',
+navPatientProfile:      'Mon profil',
+navPatientDoctors:      'Médecins',
+navPatientAppointments: 'Mes rendez-vous',
+navLogout:              'Déconnexion',
+
+// Arabe
+navPatientHome:         'الرئيسية',
+navPatientProfile:      'ملفي الشخصي',
+navPatientDoctors:      'الأطباء',
+navPatientAppointments: 'مواعيدي',
+navLogout:              'تسجيل الخروج',</code></pre>
+
+<h3 class="subsection">Action 3 — Supprimer src/types/models.ts (BLOQUANT)</h3>
+<p>
+Vérifier qu'aucune page n'importe depuis ce fichier, puis le supprimer définitivement.
+Les types corrects sont dans <code>doctor.types.ts</code>, <code>patient.types.ts</code>,
+<code>appointment.types.ts</code> et <code>medical.types.ts</code>.
+</p>
+
+<h3 class="subsection">Action 4 — Supprimer authService.refresh() (GRAVE)</h3>
+<p>
+Retirer la méthode <code>refresh()</code> de <code>authService.ts</code>.
+Retirer également la duplication de <code>BASE_URL</code> en l'exportant depuis
+<code>axios.ts</code>.
+</p>
+
+<h3 class="subsection">Action 5 — Supprimer les fichiers morts (MOYEN)</h3>
+<p>
+Supprimer <code>ServicesPage.tsx</code> et <code>SpecialitiesPage.tsx</code> du repository.
+Supprimer également <code>types/api.ts</code> tant qu'il n'est pas utilisé et que son contenu
+est inexact.
+</p>
+
+<h3 class="subsection">Action 6 — Exécuter tsc -b et corriger toutes les erreurs</h3>
+<p>
+Après les corrections 1 à 5, lancer <code>npx tsc -b</code> et corriger exhaustivement
+toutes les erreurs TypeScript. Le build doit passer à zéro erreur avant tout nouveau
+développement.
+</p>
+
+<!-- ══════════════════════════════════════════════ SECTION 6 -->
+<h2 class="section-title"><span class="sec-num">6</span>Ordre de correction recommandé</h2>
+
+<table>
+  <thead>
+    <tr>
+      <th>Ordre</th>
+      <th>Action</th>
+      <th>Fichier(s)</th>
+      <th>Priorité</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>1</td>
+      <td>Persistance auth (localStorage)</td>
+      <td><code>authSlice.ts</code></td>
+      <td class="crit-bloquant">BLOQUANT</td>
+    </tr>
+    <tr>
+      <td>2</td>
+      <td>Ajouter clés manquantes translations</td>
+      <td><code>translations.ts</code></td>
+      <td class="crit-bloquant">BLOQUANT</td>
+    </tr>
+    <tr>
+      <td>3</td>
+      <td>Supprimer types/models.ts</td>
+      <td><code>types/models.ts</code></td>
+      <td class="crit-bloquant">BLOQUANT</td>
+    </tr>
+    <tr>
+      <td>4</td>
+      <td>tsc -b → corriger toutes les erreurs</td>
+      <td>Global</td>
+      <td class="crit-bloquant">BLOQUANT</td>
+    </tr>
+    <tr>
+      <td>5</td>
+      <td>Supprimer authService.refresh()</td>
+      <td><code>authService.ts</code></td>
+      <td class="crit-grave">GRAVE</td>
+    </tr>
+    <tr>
+      <td>6</td>
+      <td>Exporter BASE_URL depuis axios.ts</td>
+      <td><code>axios.ts</code>, <code>authService.ts</code></td>
+      <td class="crit-grave">GRAVE</td>
+    </tr>
+    <tr>
+      <td>7</td>
+      <td>Supprimer ServicesPage, SpecialitiesPage, api.ts</td>
+      <td>3 fichiers</td>
+      <td class="crit-moyen">MOYEN</td>
+    </tr>
+    <tr>
+      <td>8</td>
+      <td>Corriger ordre routes (spécifique avant générique)</td>
+      <td><code>routes/index.tsx</code></td>
+      <td class="crit-moyen">MOYEN</td>
+    </tr>
+    <tr>
+      <td>9</td>
+      <td>Valider endpoints backend avec Postman</td>
+      <td>—</td>
+      <td class="crit-moyen">AVANT pages</td>
+    </tr>
+    <tr>
+      <td>10</td>
+      <td>Tester le parcours patient complet end-to-end</td>
+      <td>—</td>
+      <td class="crit-moyen">AVANT médecin</td>
+    </tr>
+  </tbody>
+</table>
+
+<!-- ══════════════════════════════════════════════ SECTION 7 -->
+<h2 class="section-title"><span class="sec-num">7</span>Conclusion</h2>
+
+<p>
+Le projet CodevaSanté possède une architecture globalement saine : la séparation des couches
+(types → services → Redux → composants), l'utilisation correcte de TypeScript strict, et la
+logique de rafraîchissement JWT dans <code>axios.ts</code> démontrent une compréhension solide
+des bonnes pratiques.
+</p>
+
+<p>
+Cependant, <strong>deux problèmes bloquants empêchent toute démonstration fonctionnelle
+de l'application</strong> : l'absence de persistance de l'authentification et les clés de
+traduction manquantes qui cassent le build TypeScript. Ces deux points doivent être traités
+en priorité absolue.
+</p>
+
+<p>
+La principale leçon de cet audit est que la méthode Ahmed Yahya a une raison d'être :
+générer des pages complètes avant de valider les services et les endpoints avec de vrais
+tokens JWT en Postman introduit un risque de divergence silencieuse que TypeScript ne peut
+pas détecter. Les données JSON réelles du backend sont la seule source de vérité.
+</p>
+
+<div class="callout info">
+  <strong>Recommandation finale</strong>
+  Corriger les 4 points bloquants dans une PR dédiée (<code>fix/auth-persistence-and-translations</code>),
+  faire passer <code>tsc -b</code> à zéro erreur, tester le login/logout/refresh manuellement,
+  puis reprendre le développement selon la méthode Ahmed Yahya Phase par Phase.
+</div>
+
+<div class="doc-footer">
+  Audit Technique CodevaSanté — Sprint 1 &nbsp;·&nbsp; 29 avril 2026
+  &nbsp;·&nbsp; Confidentiel — Usage interne Codeva Solutions
+</div>
+
+</body>
+</html>
