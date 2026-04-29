@@ -5,6 +5,7 @@ import { doctors, type Doctor } from '@/constants/data'
 import { useT } from '@/hooks/useT'
 import { useTitle } from '@/hooks/useTitle'
 import { Link } from 'react-router-dom'
+import { cn } from '@/utils/cn'
 
 function DoctorModal({ doctor, onClose }: { doctor: Doctor; onClose: () => void }) {
   const { t, lang } = useT()
@@ -17,7 +18,7 @@ function DoctorModal({ doctor, onClose }: { doctor: Doctor; onClose: () => void 
       <div className="bg-white rounded-2xl shadow-2xl w-full max-w-xl max-h-[90vh] overflow-y-auto">
         {/* Modal header */}
         <div className="hero-bg rounded-t-2xl p-6 relative overflow-hidden">
-          <div className="hero-dots absolute inset-0 opacity-10" />
+          <div className="hero-dots absolute inset-0 opacity-10 pointer-events-none" />
           <button
             type="button"
             onClick={onClose}
@@ -27,9 +28,17 @@ function DoctorModal({ doctor, onClose }: { doctor: Doctor; onClose: () => void 
             <X size={16} />
           </button>
           <div className="flex items-center gap-4 relative z-10">
-            <div className="w-16 h-16 rounded-2xl bg-white/20 flex items-center justify-center flex-shrink-0 border border-white/20">
-              <Stethoscope size={28} className="text-white" />
-            </div>
+            {doctor.image ? (
+              <img
+                src={doctor.image}
+                alt={doctor.name}
+                className="w-16 h-16 rounded-2xl object-cover object-top flex-shrink-0 border-2 border-white/30"
+              />
+            ) : (
+              <div className="w-16 h-16 rounded-2xl bg-white/20 flex items-center justify-center flex-shrink-0 border border-white/20">
+                <Stethoscope size={28} className="text-white" />
+              </div>
+            )}
             <div>
               <h2 className="text-xl font-extrabold text-white">{doctor.name}</h2>
               <p className="text-white/80 text-sm mt-0.5">
@@ -118,7 +127,7 @@ function DoctorModal({ doctor, onClose }: { doctor: Doctor; onClose: () => void 
         {/* Modal footer */}
         <div className="px-6 pb-6 flex gap-3 justify-end border-t border-[#E2E8F0] pt-4">
           <Button variant="outline" size="md" onClick={onClose}>{t.dmClose}</Button>
-          <Link to="/contact">
+          <Link to="/auth">
             <Button variant="primary" size="md">{t.dmBook}</Button>
           </Link>
         </div>
@@ -129,7 +138,7 @@ function DoctorModal({ doctor, onClose }: { doctor: Doctor; onClose: () => void 
 
 export default function DoctorsPage() {
   const { t, lang } = useT()
-  useTitle(t.nav[3])
+  useTitle(t.nav[2])
   const contentRef = useRef<HTMLElement>(null)
   const [selected, setSelected] = useState<Doctor | null>(null)
 
@@ -181,15 +190,35 @@ export default function DoctorsPage() {
                 className="group bg-white border border-[#E2E8F0] rounded-2xl overflow-hidden transition-all duration-300 hover:-translate-y-[4px] hover:shadow-xl hover:border-primary/20 flex flex-col"
               >
                 {/* Card avatar */}
-                <div className="h-40 hero-bg relative overflow-hidden flex flex-col items-center justify-center gap-2">
-                  <div className="hero-dots absolute inset-0 opacity-10" />
-                  <div className="w-16 h-16 rounded-2xl bg-white/20 border border-white/20 flex items-center justify-center relative z-10">
-                    <Stethoscope size={28} className="text-white" />
-                  </div>
-                  {/* Years exp chip */}
-                  <span className="relative z-10 bg-white/15 border border-white/20 text-white text-xs font-semibold px-2.5 py-0.5 rounded-full">
-                    {doc.yearsExp} {t.dmYearsExp}
-                  </span>
+                <div className={cn(
+                  'h-40 hero-bg relative overflow-hidden',
+                  !doc.image && 'flex flex-col items-center justify-center gap-2'
+                )}>
+                  {doc.image ? (
+                    <>
+                      <img
+                        src={doc.image}
+                        alt={doc.name}
+                        className="absolute inset-0 w-full h-full object-cover object-top"
+                      />
+                      <div className="absolute inset-0 bg-gradient-to-t from-black/55 to-transparent" />
+                      <span className="absolute bottom-2 start-0 end-0 flex justify-center z-10">
+                        <span className="bg-white/15 border border-white/20 backdrop-blur-sm text-white text-xs font-semibold px-2.5 py-0.5 rounded-full">
+                          {doc.yearsExp} {t.dmYearsExp}
+                        </span>
+                      </span>
+                    </>
+                  ) : (
+                    <>
+                      <div className="hero-dots absolute inset-0 opacity-10" />
+                      <div className="w-16 h-16 rounded-2xl bg-white/20 border border-white/20 flex items-center justify-center relative z-10">
+                        <Stethoscope size={28} className="text-white" />
+                      </div>
+                      <span className="relative z-10 bg-white/15 border border-white/20 text-white text-xs font-semibold px-2.5 py-0.5 rounded-full">
+                        {doc.yearsExp} {t.dmYearsExp}
+                      </span>
+                    </>
+                  )}
                 </div>
 
                 <div className="p-5 flex flex-col flex-1">
@@ -210,7 +239,7 @@ export default function DoctorsPage() {
                     >
                       {t.viewProfile}
                     </Button>
-                    <Link to="/contact" className="flex-1">
+                    <Link to="/auth" className="flex-1">
                       <Button variant="primary" size="sm" className="w-full">{t.book}</Button>
                     </Link>
                   </div>

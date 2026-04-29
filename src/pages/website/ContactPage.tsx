@@ -88,7 +88,7 @@ function ContactFormBody({ lang, t }: { lang: string; t: ReturnType<typeof useT>
 
 export default function ContactPage() {
   const { t, lang } = useT()
-  useTitle(t.nav[5])
+  useTitle(t.nav[3])
   const contentRef = useRef<HTMLElement>(null)
 
   const infoItems = [

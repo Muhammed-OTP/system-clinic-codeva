@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react'
+import { useState } from 'react'
 import { Link, useLocation } from 'react-router-dom'
 import { Activity, Menu, X } from 'lucide-react'
 import { useAppDispatch } from '@/store'
@@ -11,10 +11,6 @@ export function Navbar() {
   const dispatch = useAppDispatch()
   const location = useLocation()
   const [open, setOpen] = useState(false)
-
-  useEffect(() => {
-    setOpen(false)
-  }, [location.pathname])
 
   return (
     <header className="navbar-glass sticky top-0 z-50 border-b border-[#E2E8F0]">
@@ -82,7 +78,7 @@ export function Navbar() {
           <button
             type="button"
             onClick={() => setOpen((v) => !v)}
-            aria-expanded={open ? 'true' : 'false'}
+            aria-expanded={open}
             aria-label={open ? 'Close menu' : 'Open menu'}
             className="md:hidden flex items-center justify-center w-9 h-9 rounded-lg text-accent hover:bg-primary-subtle transition-colors duration-150 cursor-pointer"
           >
@@ -106,6 +102,7 @@ export function Navbar() {
               <Link
                 key={path}
                 to={path}
+                onClick={() => setOpen(false)}
                 className={cn(
                   'text-sm font-medium px-3 py-2.5 rounded-lg transition-all duration-150 no-underline',
                   active
@@ -120,6 +117,7 @@ export function Navbar() {
           <div className="mt-3 pt-3 border-t border-[#E2E8F0]">
             <Link
               to="/auth"
+              onClick={() => setOpen(false)}
               className="flex items-center justify-center text-sm font-semibold text-white bg-primary rounded-full px-4 py-2.5 shadow-[0_4px_14px_0_rgba(9,20,183,0.25)] hover:bg-primary-dark transition-all duration-200 no-underline"
             >
               {t.cta}
