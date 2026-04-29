@@ -53,14 +53,6 @@ export const fetchMyRecords = createAsyncThunk('patient/fetchMyRecords', () =>
   patientService.getMyRecords()
 )
 
-const patientThunks = [
-  fetchMyProfile,
-  fetchDoctors,
-  bookAppointment,
-  cancelAppointment,
-  fetchMyRecords,
-]
-
 const patientSlice = createSlice({
   name: 'patient',
   initialState,
@@ -92,14 +84,20 @@ const patientSlice = createSlice({
         state.loading = false
         state.records = action.payload
       })
-      .addMatcher(isPending(...patientThunks), (state) => {
-        state.loading = true
-        state.error = null
-      })
-      .addMatcher(isRejected(...patientThunks), (state, action) => {
-        state.loading = false
-        state.error = action.error.message ?? 'خطأ غير متوقع'
-      })
+      .addMatcher(
+        isPending(fetchMyProfile, fetchDoctors, bookAppointment, cancelAppointment, fetchMyRecords),
+        (state) => {
+          state.loading = true
+          state.error = null
+        }
+      )
+      .addMatcher(
+        isRejected(fetchMyProfile, fetchDoctors, bookAppointment, cancelAppointment, fetchMyRecords),
+        (state, action) => {
+          state.loading = false
+          state.error = action.error.message ?? 'خطأ غير متوقع'
+        }
+      )
   },
 })
 
