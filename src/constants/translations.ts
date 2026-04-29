@@ -86,6 +86,10 @@ export const translations = {
     dmYearsExp: "ans d'expérience",
     newAppt: 'Nouveau RDV',
     newApptFull: '+ Nouveau RDV',
+    unauthorizedTitle: 'Accès refusé',
+    unauthorizedSub: "Vous n'avez pas les droits nécessaires pour accéder à cette page.",
+    unauthorizedBack: "Retour à l'accueil",
+    unauthorizedLogin: 'Se connecter',
   },
   ar: {
     nav: ['الرئيسية', 'من نحن', 'الأطباء', 'اتصل بنا'],
@@ -174,6 +178,10 @@ export const translations = {
     dmYearsExp: 'سنوات خبرة',
     newAppt: 'موعد جديد',
     newApptFull: '+ موعد جديد',
+    unauthorizedTitle: 'غير مصرح',
+    unauthorizedSub: 'ليس لديك صلاحية للوصول إلى هذه الصفحة.',
+    unauthorizedBack: 'العودة للرئيسية',
+    unauthorizedLogin: 'تسجيل الدخول',
   },
 }
 
