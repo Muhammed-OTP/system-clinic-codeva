@@ -1,7 +1,7 @@
 export const translations = {
   fr: {
-    nav: ['Accueil', 'À propos', 'Services', 'Médecins', 'Spécialités', 'Contact'],
-    navPaths: ['/', '/about', '/services', '/doctors', '/specialities', '/contact'],
+    nav: ['Accueil', 'À propos', 'Médecins', 'Contact'],
+    navPaths: ['/', '/about', '/doctors', '/contact'],
     cta: 'Prendre rendez-vous',
     clinicBadge: 'Clinique de Confiance',
     langToggle: ['FR', 'AR'],
@@ -88,8 +88,8 @@ export const translations = {
     newApptFull: '+ Nouveau RDV',
   },
   ar: {
-    nav: ['الرئيسية', 'من نحن', 'الخدمات', 'الأطباء', 'التخصصات', 'اتصل بنا'],
-    navPaths: ['/', '/about', '/services', '/doctors', '/specialities', '/contact'],
+    nav: ['الرئيسية', 'من نحن', 'الأطباء', 'اتصل بنا'],
+    navPaths: ['/', '/about', '/doctors', '/contact'],
     cta: 'حجز موعد',
     clinicBadge: 'عيادة الثقة',
     langToggle: ['FR', 'AR'],

@@ -53,7 +53,7 @@ export function Footer() {
             <ul className="space-y-2.5">
               {specialities.slice(0, 6).map((s) => (
                 <li key={s.fr}>
-                  <Link to="/specialities" className="text-sm no-underline text-white/65 transition-colors duration-150 hover:text-white">
+                  <Link to="/doctors" className="text-sm no-underline text-white/65 transition-colors duration-150 hover:text-white">
                     {s[lang]}
                   </Link>
                 </li>

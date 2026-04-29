@@ -3,6 +3,7 @@ import { Button } from '@/components/ui/Button'
 import { benefits, services } from '@/constants/data'
 import { useT } from '@/hooks/useT'
 import { useTitle } from '@/hooks/useTitle'
+import { Link } from 'react-router-dom'
 
 export default function HomePage() {
   const { t, lang } = useT()
@@ -35,16 +36,20 @@ export default function HomePage() {
             </h1>
             <p className="text-lg text-white/70 max-w-md mb-8 leading-relaxed">{t.heroSub}</p>
             <div className="flex flex-wrap gap-3">
-              <Button variant="primary" size="lg" className="shadow-[0_4px_24px_0_rgba(9,20,183,0.5)]">
-                {t.cta}
-              </Button>
-              <Button
-                variant="ghost"
-                size="lg"
-                className="text-white border border-white/30 hover:bg-white/10 hover:text-white"
-              >
-                {t.heroLearnMore}
-              </Button>
+              <Link to="/auth">
+                <Button variant="primary" size="lg" className="shadow-[0_4px_24px_0_rgba(9,20,183,0.5)]">
+                  {t.cta}
+                </Button>
+              </Link>
+              <Link to="/about">
+                <Button
+                  variant="ghost"
+                  size="lg"
+                  className="text-white border border-white/30 hover:bg-white/10 hover:text-white"
+                >
+                  {t.heroLearnMore}
+                </Button>
+              </Link>
             </div>
           </div>
 
@@ -132,7 +137,9 @@ export default function HomePage() {
         <div className="max-w-[1200px] mx-auto px-8 text-center">
           <h2 className="text-3xl lg:text-4xl font-extrabold text-white mb-3">{t.ctaBannerTitle}</h2>
           <p className="text-white/70 text-lg mb-8 max-w-lg mx-auto">{t.ctaBannerSub}</p>
-          <Button variant="secondary" size="lg">{t.ctaBannerBtn}</Button>
+          <Link to="/auth">
+            <Button variant="secondary" size="lg">{t.ctaBannerBtn}</Button>
+          </Link>
         </div>
       </section>
     </main>

@@ -35,6 +35,7 @@ export interface Doctor {
   domainsFr: string
   domainsAr: string
   workplaces: DoctorWorkplace[]
+  image?: string
 }
 
 export interface Benefit {
@@ -118,6 +119,7 @@ export const doctors: Doctor[] = [
       { type: 'gov', name: 'CHU Mustapha Pacha' },
       { type: 'private', name: 'Codeva Clinic' },
     ],
+    image: 'https://randomuser.me/api/portraits/women/44.jpg',
   },
   {
     id: 2,
@@ -135,6 +137,7 @@ export const doctors: Doctor[] = [
       { type: 'gov', name: "CHU d'Oran" },
       { type: 'private', name: 'Codeva Clinic' },
     ],
+    image: 'https://randomuser.me/api/portraits/men/22.jpg',
   },
   {
     id: 3,
@@ -153,6 +156,7 @@ export const doctors: Doctor[] = [
       { type: 'private', name: 'Codeva Clinic' },
       { type: 'private', name: 'Cabinet Hydra' },
     ],
+    image: 'https://randomuser.me/api/portraits/women/55.jpg',
   },
   {
     id: 4,
@@ -171,6 +175,61 @@ export const doctors: Doctor[] = [
       { type: 'gov', name: 'EHS Psychiatrie' },
       { type: 'private', name: 'Codeva Clinic' },
     ],
+    image: 'https://randomuser.me/api/portraits/men/45.jpg',
+  },
+  {
+    id: 5,
+    name: 'Dr. Ahmed Ould Abdallah',
+    specialtyFr: 'Médecin Généraliste',
+    specialtyAr: 'طبيب عام',
+    bioFr: 'Praticien au CHN de Nouakchott, spécialisé dans la prise en charge des maladies chroniques.',
+    bioAr: 'طبيب في المركز الاستشفائي الوطني بنواكشوط، متخصص في إدارة الأمراض المزمنة.',
+    degree: 'Doctorat en Médecine – Faculté de Médecine de Nouakchott (2014)',
+    specialization: 'Formation en médecine interne – CHU Ibn Sina, Rabat (2016)',
+    yearsExp: 9,
+    domainsFr: 'Médecine interne · Maladies chroniques · Prévention',
+    domainsAr: 'الطب الداخلي · الأمراض المزمنة · الوقاية',
+    workplaces: [
+      { type: 'gov', name: 'CHN de Nouakchott' },
+      { type: 'private', name: 'Codeva Clinic' },
+    ],
+    image: 'https://randomuser.me/api/portraits/men/34.jpg',
+  },
+  {
+    id: 6,
+    name: 'Dr. Fatimetou Mint Sidi',
+    specialtyFr: 'Gynécologue-Obstétricienne',
+    specialtyAr: 'طبيبة نساء وتوليد',
+    bioFr: 'Experte en suivi de grossesse et gynécologie, diplômée de Marrakech, 11 ans de pratique.',
+    bioAr: 'خبيرة في متابعة الحمل وأمراض النساء، حاصلة على دبلوم من مراكش، 11 سنة ممارسة.',
+    degree: 'Doctorat en Médecine – Université Cadi Ayyad, Marrakech (2011)',
+    specialization: 'Spécialisation Gynéco-Obstétrique – CHU Mohammed VI (2015)',
+    yearsExp: 11,
+    domainsFr: 'Gynécologie · Obstétrique · Suivi grossesse à risque',
+    domainsAr: 'أمراض النساء · التوليد · متابعة الحمل عالي الخطورة',
+    workplaces: [
+      { type: 'gov', name: 'Hôpital Cheikh Zayed, Nouakchott' },
+      { type: 'private', name: 'Codeva Clinic' },
+    ],
+    image: 'https://randomuser.me/api/portraits/women/63.jpg',
+  },
+  {
+    id: 7,
+    name: 'Dr. Sidi Ould Bah',
+    specialtyFr: 'Ophtalmologue',
+    specialtyAr: 'طبيب عيون',
+    bioFr: 'Ophtalmologue formé à Paris, spécialisé en chirurgie réfractive et traitement du glaucome.',
+    bioAr: 'طبيب عيون تكوّن في باريس، متخصص في الجراحة الانكسارية وعلاج الزرق.',
+    degree: 'Doctorat en Médecine – Université Paris Diderot (2015)',
+    specialization: 'DESC Ophtalmologie – Hôpital Lariboisière (2019)',
+    yearsExp: 6,
+    domainsFr: 'Chirurgie réfractive · Glaucome · Rétinologie',
+    domainsAr: 'الجراحة الانكسارية · الزرق · أمراض الشبكية',
+    workplaces: [
+      { type: 'gov', name: 'Hôpital de Rosso, Mauritanie' },
+      { type: 'private', name: 'Codeva Clinic' },
+    ],
+    image: 'https://randomuser.me/api/portraits/men/76.jpg',
   },
 ]
 
