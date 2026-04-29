@@ -1,5 +1,6 @@
 import { Route, Routes } from 'react-router-dom'
 import ProtectedRoute from './ProtectedRoute'
+import PatientLayout from '@/components/layout/PatientLayout'
 import LoginPage from '@/pages/app/LoginPage'
 import UnauthorizedPage from '@/pages/app/UnauthorizedPage'
 import PatientHomePage from '@/pages/app/patient/PatientHomePage'
@@ -15,53 +16,20 @@ export default function AppRoutes() {
       <Route path="login" element={<LoginPage />} />
       <Route path="unauthorized" element={<UnauthorizedPage />} />
       <Route
-        path="patient/home"
+        path="patient"
         element={
           <ProtectedRoute role="patient">
-            <PatientHomePage />
+            <PatientLayout />
           </ProtectedRoute>
         }
-      />
-      <Route
-        path="patient/profile"
-        element={
-          <ProtectedRoute role="patient">
-            <PatientProfilePage />
-          </ProtectedRoute>
-        }
-      />
-      <Route
-        path="patient/doctors"
-        element={
-          <ProtectedRoute role="patient">
-            <DoctorsListPage />
-          </ProtectedRoute>
-        }
-      />
-      <Route
-        path="patient/doctors/:id"
-        element={
-          <ProtectedRoute role="patient">
-            <DoctorDetailPage />
-          </ProtectedRoute>
-        }
-      />
-      <Route
-        path="patient/appointments"
-        element={
-          <ProtectedRoute role="patient">
-            <MyAppointmentsPage />
-          </ProtectedRoute>
-        }
-      />
-      <Route
-        path="patient/appointments/new"
-        element={
-          <ProtectedRoute role="patient">
-            <CreateAppointmentPage />
-          </ProtectedRoute>
-        }
-      />
+      >
+        <Route path="home" element={<PatientHomePage />} />
+        <Route path="profile" element={<PatientProfilePage />} />
+        <Route path="doctors" element={<DoctorsListPage />} />
+        <Route path="doctors/:id" element={<DoctorDetailPage />} />
+        <Route path="appointments" element={<MyAppointmentsPage />} />
+        <Route path="appointments/new" element={<CreateAppointmentPage />} />
+      </Route>
     </Routes>
   )
 }
